@@ -1,102 +1,385 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Samsung Phone Review System</title>
+    <title>SamsungAI - Phone Analysis</title>
 
-<link rel="stylesheet" href="style.css">
-
-
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- Header -->
-<header class="header">
-    <div class="container">
-        <h1>Samsung Phone Review System</h1>
-        <p>AI-powered Samsung phone information and product reviews</p>
-    </div>
-</header>
+    <!-- Header -->
+    <header class="header">
 
-
-<!-- Main Content -->
-<main class="container">
-
-    <!-- Search Section -->
-    <section class="search-section">
-
-        <h2>Search Samsung Phone</h2>
-
-        <div class="search-box">
-
-            <input
-                type="text"
-                id="phoneInput"
-                placeholder="Enter phone name, e.g. Samsung Galaxy S23"
-                autocomplete="off"
-            >
-
-            <button id="searchBtn">
-                Get Review
-            </button>
+        <div class="logo">
+            Samsung<span>AI</span>
         </div>
 
-        <!-- Error Message -->
-        <p id="errorMessage" class="error hidden"></p>
+        <div class="header-text">
+            AI-Powered Phone Analysis
+        </div>
+
+    </header>
+
+
+    <!-- Hero Section -->
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="badge">
+                Multi-Agent AI System
+            </div>
+
+            <h1>
+                Samsung Phone
+                <span>Query & Review</span>
+            </h1>
+
+            <p>
+                Get detailed specifications and AI-generated product reviews
+                for Samsung smartphones.
+            </p>
+
+
+            <!-- Search Box -->
+            <div class="search-container">
+
+                <div class="search-box">
+
+                    <input
+                        type="text"
+                        id="phoneInput"
+                        placeholder="Search Samsung phone..."
+                        autocomplete="off"
+                    >
+
+                    <button id="searchBtn">
+                        🔍 Get Review
+                    </button>
+
+                </div>
+
+                <!-- Suggestions -->
+                <div id="suggestions" class="suggestions hidden"></div>
+
+            </div>
+
+        </div>
 
     </section>
 
 
     <!-- Loading -->
-    <div id="loading" class="loading hidden">
-        Searching for phone information...
-    </div>
+    <section id="loading" class="loading hidden">
 
+        <div class="spinner"></div>
 
-    <!-- Result Section -->
-    <section id="resultSection" class="result-section hidden">
-
-        <!-- Phone Name -->
-        <div class="phone-header">
-            <h2 id="phoneName"></h2>
-        </div>
-
-
-        <!-- Product Review -->
-        <div class="review-card">
-
-            <h2>Product Review</h2>
-
-            <p id="reviewText"></p>
-
-        </div>
+        <p>
+            AI agents are analyzing the phone...
+        </p>
 
     </section>
 
-</main>
+
+    <!-- Error -->
+    <section id="errorMessage" class="error hidden">
+
+        <h3>⚠️ Something went wrong</h3>
+
+        <p></p>
+
+    </section>
+<!-- Compare Phones -->
+<section class="compare-section">
+
+    <div class="section-title">
+        <h3>⚖️ Compare Samsung Phones</h3>
+        <p>Compare specifications of two Samsung smartphones</p>
+    </div>
+
+    <div class="compare-controls">
+
+        <select id="phone1Select">
+            <option value="">Select first phone</option>
+        </select>
+
+        <span class="vs-text">VS</span>
+
+        <select id="phone2Select">
+            <option value="">Select second phone</option>
+        </select>
+
+        <button id="compareBtn">
+            Compare
+        </button>
+
+    </div>
+
+    <div id="compareResult" class="compare-result hidden">
+
+    <div class="compare-table">
+
+        <div class="compare-row compare-header">
+            <div>Feature</div>
+            <div id="comparePhone1">Phone 1</div>
+            <div id="comparePhone2">Phone 2</div>
+        </div>
+
+        <div class="compare-row">
+            <div>📺 Display</div>
+            <div id="compareDisplay1">-</div>
+            <div id="compareDisplay2">-</div>
+        </div>
+
+        <div class="compare-row">
+            <div>⚡ Chipset</div>
+            <div id="compareChipset1">-</div>
+            <div id="compareChipset2">-</div>
+        </div>
+
+        <div class="compare-row">
+            <div>📷 Camera</div>
+            <div id="compareCamera1">-</div>
+            <div id="compareCamera2">-</div>
+        </div>
+
+        <div class="compare-row">
+            <div>🔋 Battery</div>
+            <div id="compareBattery1">-</div>
+            <div id="compareBattery2">-</div>
+        </div>
+
+        <div class="compare-row">
+            <div>🔌 Charging</div>
+            <div id="compareCharging1">-</div>
+            <div id="compareCharging2">-</div>
+        </div>
+
+    </div>
 
 
-<!-- Footer -->
-<footer class="footer">
+    <!-- AI Comparison Verdict -->
 
-    <p>
-        Samsung Phone Query &amp; Review System
-    </p>
+    <div id="comparisonVerdict" class="comparison-verdict hidden">
 
-    <p>
-        AI-Powered Multi-Agent System
-    </p>
+        <div class="verdict-header">
 
-</footer>
+            <div class="verdict-icon">🤖</div>
+
+            <div>
+                <h3>AI Comparison Verdict</h3>
+                <p>Generated by AI-powered comparison analysis</p>
+            </div>
+
+        </div>
+
+        <div class="verdict-content">
+
+            <div class="winner-box">
+                <span>🏆 Recommended</span>
+                <h2 id="winnerPhone">-</h2>
+            </div>
+
+            <p id="verdictText">
+                Comparison analysis will appear here.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+</section>
+
+    <!-- Result -->
+    <main id="resultSection" class="result-section hidden">
+
+<!-- Phone Header -->
+<div class="phone-header">
+
+    <div class="phone-info">
+
+        <div class="ai-badge">
+            🤖 AI Analysis
+        </div>
+
+        <h2 id="phoneName">
+            Samsung Galaxy S23
+        </h2>
+
+        <p id="phoneSubtitle">
+            AI-powered specification and product analysis
+        </p>
+
+    </div>
+
+    <div class="phone-visual">
+        <div class="phone-placeholder">
+            📱
+        </div>
+    </div>
+
+</div>
 
 
-<!-- JavaScript -->
-<script src="script.js"></script>
+        <!-- Specifications -->
+        <section class="spec-section">
+
+            <h3>
+                📱 Specifications
+            </h3>
+
+
+            <div class="spec-grid">
+
+                <!-- Display -->
+                <div class="spec-card">
+
+                    <div class="spec-icon">
+                        📺
+                    </div>
+
+                    <h4>
+                        Display
+                    </h4>
+
+                    <p id="displaySpec">
+                        Information not available.
+                    </p>
+
+                </div>
+
+
+                <!-- Performance -->
+                <div class="spec-card">
+
+                    <div class="spec-icon">
+                        ⚡
+                    </div>
+
+                    <h4>
+                        Performance
+                    </h4>
+
+                    <p id="performanceSpec">
+                        Information not available.
+                    </p>
+
+                </div>
+
+
+                <!-- Camera -->
+                <div class="spec-card">
+
+                    <div class="spec-icon">
+                        📷
+                    </div>
+
+                    <h4>
+                        Camera
+                    </h4>
+
+                    <p id="cameraSpec">
+                        Information not available.
+                    </p>
+
+                </div>
+
+
+                <!-- Battery -->
+                <div class="spec-card">
+
+                    <div class="spec-icon">
+                        🔋
+                    </div>
+
+                    <h4>
+                        Battery
+                    </h4>
+
+                    <p id="batterySpec">
+                        Information not available.
+                    </p>
+
+                </div>
+
+
+                <!-- Charging -->
+                <div class="spec-card">
+
+                    <div class="spec-icon">
+                        🔌
+                    </div>
+
+                    <h4>
+                        Charging
+                    </h4>
+
+                    <p id="chargingSpec">
+                        Information not available.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Review -->
+        <section class="review-section">
+
+            <div class="review-header">
+
+                <div class="review-icon">
+                    🤖
+                </div>
+
+                <div>
+
+                    <h3>
+                        AI Product Review
+                    </h3>
+
+                    <p>
+                        Generated by Review Agent
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="review-card">
+
+                <p id="reviewText">
+                    Review not available.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+
+        <p>
+            SamsungAI • Multi-Agent Phone Query & Review System
+        </p>
+
+    </footer>
+
+
+    <script src="script.js"></script>
 
 </body>
 

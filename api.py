@@ -7,10 +7,13 @@ from agent_review import ReviewAgent
 
 
 app = FastAPI(
-    title="Samsung Phone Query & Review System",
+    title="Samsung Phone Query and Review System",
+    description="AI-powered Samsung phone specification and review API",
     version="1.0"
 )
 
+
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,44 +22,46 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ==========================================
-# Initialize Agents
-# ==========================================
 
+# Agents
 spec_agent = SpecificationAgent()
 review_agent = ReviewAgent()
 
-
-# ==========================================
-# Request Model
-# ==========================================
 
 class PhoneRequest(BaseModel):
     phone_name: str
 
 
-# ==========================================
-# Home Endpoint
-# ==========================================
-
 @app.get("/")
 def home():
     return {
-        "success": True,
-        "message": "Samsung Phone Query & Review API is running"
+        "message": "Samsung Phone Query and Review API is running"
     }
 
 
-# ==========================================
-# Specification Endpoint
-# ==========================================
+@app.get("/phones")
+def get_phones():
+
+    phones = []
+
+    for phone in spec_agent.phones:
+        phones.append({
+            "name": phone["name"],
+            "specifications": phone["specifications"]
+        })
+
+    return {
+        "success": True,
+        "phones": phones
+    }
+
 
 @app.post("/specifications")
 def get_specifications(request: PhoneRequest):
 
     phone_data = spec_agent.get_phone_specs(request.phone_name)
 
-    if phone_data is None:
+    if not phone_data:
         return {
             "success": False,
             "message": "Phone not found"
@@ -69,16 +74,12 @@ def get_specifications(request: PhoneRequest):
     }
 
 
-# ==========================================
-# Review Endpoint
-# ==========================================
-
 @app.post("/review")
 def get_review(request: PhoneRequest):
 
     phone_data = spec_agent.get_phone_specs(request.phone_name)
 
-    if phone_data is None:
+    if not phone_data:
         return {
             "success": False,
             "message": "Phone not found"
@@ -89,5 +90,6 @@ def get_review(request: PhoneRequest):
     return {
         "success": True,
         "phone": phone_data["name"],
+        "specifications": phone_data["specifications"],
         "review": review
     }
