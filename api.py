@@ -1,45 +1,62 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from agent_specs import SpecificationAgent
 from agent_review import ReviewAgent
 
 
-# Create FastAPI app
 app = FastAPI(
-    title="Samsung Phone Query and Review System",
-    description="API for Samsung phone specifications and reviews",
+    title="Samsung Phone Query & Review System",
     version="1.0"
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Initialize agents
+# ==========================================
+# Initialize Agents
+# ==========================================
+
 spec_agent = SpecificationAgent()
 review_agent = ReviewAgent()
 
 
-# Request model
+# ==========================================
+# Request Model
+# ==========================================
+
 class PhoneRequest(BaseModel):
     phone_name: str
 
 
-# Home endpoint
+# ==========================================
+# Home Endpoint
+# ==========================================
+
 @app.get("/")
 def home():
     return {
-        "message": "Samsung Phone Query and Review API is running"
+        "success": True,
+        "message": "Samsung Phone Query & Review API is running"
     }
 
 
-# Get phone specifications
+# ==========================================
+# Specification Endpoint
+# ==========================================
+
 @app.post("/specifications")
 def get_specifications(request: PhoneRequest):
 
-    phone_data = spec_agent.get_phone_specs(
-        request.phone_name
-    )
+    phone_data = spec_agent.get_phone_specs(request.phone_name)
 
-    if not phone_data:
+    if phone_data is None:
         return {
             "success": False,
             "message": "Phone not found"
@@ -52,23 +69,22 @@ def get_specifications(request: PhoneRequest):
     }
 
 
-# Generate phone review
+# ==========================================
+# Review Endpoint
+# ==========================================
+
 @app.post("/review")
 def get_review(request: PhoneRequest):
 
-    phone_data = spec_agent.get_phone_specs(
-        request.phone_name
-    )
+    phone_data = spec_agent.get_phone_specs(request.phone_name)
 
-    if not phone_data:
+    if phone_data is None:
         return {
             "success": False,
             "message": "Phone not found"
         }
 
-    review = review_agent.generate_review(
-        phone_data
-    )
+    review = review_agent.generate_review(phone_data)
 
     return {
         "success": True,

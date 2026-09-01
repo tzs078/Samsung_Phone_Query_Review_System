@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Samsung Phone Review System</title>
+
+<link rel="stylesheet" href="style.css">
+
+
+</head>
+
+<body>
+
+<!-- Header -->
+<header class="header">
+    <div class="container">
+        <h1>Samsung Phone Review System</h1>
+        <p>AI-powered Samsung phone information and product reviews</p>
+    </div>
+</header>
+
+
+<!-- Main Content -->
+<main class="container">
+
+    <!-- Search Section -->
+    <section class="search-section">
+
+        <h2>Search Samsung Phone</h2>
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="phoneInput"
+                placeholder="Enter phone name, e.g. Samsung Galaxy S23"
+                autocomplete="off"
+            >
+
+            <button id="searchBtn">
+                Get Review
+            </button>
+        </div>
+
+        <!-- Error Message -->
+        <p id="errorMessage" class="error hidden"></p>
+
+    </section>
+
+
+    <!-- Loading -->
+    <div id="loading" class="loading hidden">
+        Searching for phone information...
+    </div>
+
+
+    <!-- Result Section -->
+    <section id="resultSection" class="result-section hidden">
+
+        <!-- Phone Name -->
+        <div class="phone-header">
+            <h2 id="phoneName"></h2>
+        </div>
+
+
+        <!-- Product Review -->
+        <div class="review-card">
+
+            <h2>Product Review</h2>
+
+            <p id="reviewText"></p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- Footer -->
+<footer class="footer">
+
+    <p>
+        Samsung Phone Query &amp; Review System
+    </p>
+
+    <p>
+        AI-Powered Multi-Agent System
+    </p>
+
+</footer>
+
+
+<!-- JavaScript -->
+<script src="script.js"></script>
+
+</body>
+
+</html>

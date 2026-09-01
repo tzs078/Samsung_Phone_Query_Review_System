@@ -1,0 +1,215 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  }
+
+body {
+font-family: Arial, Helvetica, sans-serif;
+background: #f5f7fb;
+color: #1f2937;
+min-height: 100vh;
+}
+
+.container {
+width: 90%;
+max-width: 1100px;
+margin: auto;
+}
+
+/* Header */
+
+.header {
+background: #111827;
+color: white;
+padding: 55px 0;
+text-align: center;
+}
+
+.header h1 {
+font-size: 36px;
+margin-bottom: 12px;
+}
+
+.header p {
+font-size: 17px;
+color: #d1d5db;
+}
+
+/* Search Section */
+
+.search-section {
+background: white;
+margin-top: 35px;
+padding: 30px;
+border-radius: 14px;
+box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.search-section h2 {
+margin-bottom: 20px;
+}
+
+.search-box {
+display: flex;
+gap: 12px;
+}
+
+.search-box input {
+flex: 1;
+padding: 15px 18px;
+border: 1px solid #d1d5db;
+border-radius: 8px;
+font-size: 16px;
+outline: none;
+}
+
+.search-box input:focus {
+border-color: #111827;
+}
+
+.search-box button {
+padding: 15px 24px;
+border: none;
+border-radius: 8px;
+background: #111827;
+color: white;
+font-size: 16px;
+font-weight: bold;
+cursor: pointer;
+transition: 0.2s;
+}
+
+.search-box button:hover {
+background: #374151;
+}
+
+.search-box button:disabled {
+background: #9ca3af;
+cursor: not-allowed;
+}
+
+/* Error */
+
+.error {
+color: #dc2626;
+margin-top: 12px;
+font-size: 14px;
+}
+
+/* Loading */
+
+.loading {
+text-align: center;
+padding: 35px;
+font-size: 17px;
+font-weight: bold;
+}
+
+.hidden {
+display: none;
+}
+
+/* Result Section */
+
+.result-section {
+margin-top: 35px;
+margin-bottom: 50px;
+}
+
+.phone-header {
+background: white;
+padding: 25px;
+border-radius: 14px;
+margin-bottom: 20px;
+box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.phone-header h2 {
+font-size: 28px;
+}
+
+/* Specification Cards */
+
+.spec-grid {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 18px;
+}
+
+.spec-card {
+background: white;
+padding: 24px;
+border-radius: 12px;
+box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+}
+
+.spec-card h3 {
+font-size: 17px;
+margin-bottom: 10px;
+}
+
+.spec-card p {
+color: #4b5563;
+line-height: 1.6;
+}
+
+/* Review */
+
+.review-card {
+background: white;
+margin-top: 25px;
+padding: 30px;
+border-radius: 14px;
+box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.review-card h2 {
+margin-bottom: 20px;
+}
+
+#reviewText {
+white-space: pre-line;
+line-height: 1.8;
+color: #374151;
+}
+
+/* Footer */
+
+.footer {
+background: #111827;
+color: #d1d5db;
+text-align: center;
+padding: 25px;
+margin-top: 50px;
+}
+
+/* Responsive */
+
+@media (max-width: 700px) {
+
+.header h1 {
+    font-size: 27px;
+}
+
+.header p {
+    font-size: 15px;
+}
+
+.search-box {
+    flex-direction: column;
+}
+
+.search-box button {
+    width: 100%;
+}
+
+.spec-grid {
+    grid-template-columns: 1fr;
+}
+
+.phone-header h2 {
+    font-size: 23px;
+}
+
+}
