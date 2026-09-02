@@ -1,17 +1,31 @@
 import json
 from sentence_transformers import SentenceTransformer, util
+from llm import generate_text
 
-# Load phone data
+
+# ==========================================
+# Load Samsung phone data
+# ==========================================
+
 with open("samsung_phones.json", "r", encoding="utf-8") as file:
     phones = json.load(file)
 
-# Load embedding model
-model = SentenceTransformer("all-MiniLM-L6-v2")
 
+# ==========================================
+# RAG Embedding Model
+# ==========================================
+
+embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+
+
+# ==========================================
 # Create searchable documents
+# ==========================================
+
 documents = []
 
 for phone in phones:
+
     text = f"Phone: {phone['name']}\n"
 
     for key, value in phone["specifications"].items():
@@ -19,51 +33,48 @@ for phone in phones:
 
     documents.append(text)
 
-# Create embeddings
-document_embeddings = model.encode(
+
+document_embeddings = embedding_model.encode(
     documents,
     convert_to_tensor=True
 )
 
-print("================================")
-print(" Samsung Phone RAG Chatbot")
-print("================================")
-print("RAG system ready!")
-print("Type 'exit' to stop.\n")
 
+# ==========================================
+# Retrieve relevant specifications
+# ==========================================
 
 def get_relevant_info(phone_data, question):
-    """Select relevant specifications based on the question."""
 
     specs = phone_data["specifications"]
-    question = question.lower()
+    question_lower = question.lower()
 
-    if any(word in question for word in [
+    if any(word in question_lower for word in [
         "camera", "photo", "rear camera", "main camera"
     ]):
-        keys = ["Main Camera", "Selfie camera", "Video"]
+        keys = ["Main Camera", "Selfie camera"]
 
-    elif any(word in question for word in [
+    elif any(word in question_lower for word in [
         "battery", "charging", "charge"
     ]):
         keys = ["Battery", "Battery (old)", "Charging"]
 
-    elif any(word in question for word in [
+    elif any(word in question_lower for word in [
         "display", "screen", "resolution", "size"
     ]):
         keys = ["Display", "Size", "Resolution", "Protection"]
 
-    elif any(word in question for word in [
+    elif any(word in question_lower for word in [
         "processor", "cpu", "performance", "chipset", "gpu"
     ]):
         keys = ["Chipset", "CPU", "GPU", "Our Tests"]
 
-    elif any(word in question for word in [
+    elif any(word in question_lower for word in [
         "price", "cost", "expensive", "cheap"
     ]):
         keys = ["Price", "128GB 8GB RAM", "256GB 8GB RAM"]
 
-    elif any(word in question for word in [
+    elif any(word in question_lower for word in [
         "android", "software", "one ui", "os"
     ]):
         keys = ["Platform"]
@@ -77,115 +88,72 @@ def get_relevant_info(phone_data, question):
             "Price"
         ]
 
-    result = []
-
-    for key in keys:
-        if key in specs:
-            result.append((key, specs[key]))
-
-    return result
+    return [
+        (key, specs[key])
+        for key in keys
+        if key in specs
+    ]
 
 
-def generate_answer(phone_name, question, relevant_info):
-    """Generate a clean answer from retrieved specifications."""
+# ==========================================
+# LLM Answer Generation
+# ==========================================
+def generate_llm_answer(phone_name, question, relevant_info):
 
-    question = question.lower()
+    question_lower = question.lower()
 
-    # Camera answer
-    if any(word in question for word in [
-        "camera", "photo", "rear camera"
-    ]):
+    # Exact factual retrieval
+    for key, value in relevant_info:
 
-        answer = f"\n{phone_name} Camera:\n"
+        if "camera" in question_lower and key == "Main Camera":
+            return f"The {phone_name} has a {value}."
 
-        for key, value in relevant_info:
+        if "selfie" in question_lower and key == "Selfie camera":
+            return f"The {phone_name} has a {value}."
 
-            if key == "Main Camera":
-                answer += f"• Rear Camera: {value}\n"
+        if "battery" in question_lower and key == "Battery":
+            return f"The {phone_name} has a {value}."
 
-            elif key == "Selfie camera":
-                answer += f"• Selfie Camera: {value}\n"
+        if "display" in question_lower and key in ["Display", "Size"]:
+            return f"The {phone_name} has a {value}."
 
-            elif key == "Video":
-                answer += f"• Video: {value}\n"
+        if any(word in question_lower for word in ["processor", "chipset", "cpu"]) and key == "Chipset":
+            return f"The {phone_name} uses {value}."
 
-        return answer
+    # LLM for general questions
+    context = "\n".join(
+        f"{key}: {value}"
+        for key, value in relevant_info
+    )
 
-    # Battery answer
-    elif any(word in question for word in [
-        "battery", "charging", "charge"
-    ]):
+    prompt = f"""
+Answer using only these specifications.
 
-        answer = f"\n{phone_name} Battery:\n"
+Phone: {phone_name}
 
-        for key, value in relevant_info:
-            answer += f"• {key}: {value}\n"
+Specifications:
+{context}
 
-        return answer
+Question: {question}
 
-    # Display answer
-    elif any(word in question for word in [
-        "display", "screen", "resolution", "size"
-    ]):
+Answer:
+"""
 
-        answer = f"\n{phone_name} Display:\n"
-
-        for key, value in relevant_info:
-            answer += f"• {key}: {value}\n"
-
-        return answer
-
-    # Performance answer
-    elif any(word in question for word in [
-        "processor", "cpu", "performance", "chipset", "gpu"
-    ]):
-
-        answer = f"\n{phone_name} Performance:\n"
-
-        for key, value in relevant_info:
-            answer += f"• {key}: {value}\n"
-
-        return answer
-
-    # Price answer
-    elif any(word in question for word in [
-        "price", "cost", "expensive", "cheap"
-    ]):
-
-        answer = f"\n{phone_name} Pricing:\n"
-
-        for key, value in relevant_info:
-            answer += f"• {key}: {value}\n"
-
-        return answer
-
-    # General answer
-    else:
-
-        answer = f"\n{phone_name} Information:\n"
-
-        for key, value in relevant_info:
-            answer += f"• {key}: {value}\n"
-
-        return answer
+    return generate_text(prompt, max_new_tokens=80)
 
 
-# Chat loop
-while True:
 
-    question = input("Ask a question about Samsung phones: ")
+# ==========================================
+# Chatbot
+# ==========================================
 
-    if question.lower().strip() == "exit":
-        print("Goodbye!")
-        break
+def ask_question(question):
 
-    # Convert question into embedding
-    question_embedding = model.encode(
+    question_embedding = embedding_model.encode(
         question,
         convert_to_tensor=True
     )
 
-    # Find most relevant phone
     scores = util.cos_sim(
         question_embedding,
         document_embeddings
@@ -194,27 +162,55 @@ while True:
     best_index = scores.argmax().item()
 
     phone_data = phones[best_index]
-    phone_name = phone_data["name"]
 
-    # Get relevant specifications
     relevant_info = get_relevant_info(
         phone_data,
         question
     )
 
-    print("\n--------------------------------")
+    if not relevant_info:
+        return {
+            "phone": phone_data["name"],
+            "answer": "Sorry, relevant information was not found."
+        }
 
-    if relevant_info:
-        answer = generate_answer(
-            phone_name,
-            question,
-            relevant_info
+    answer = generate_llm_answer(
+        phone_data["name"],
+        question,
+        relevant_info
+    )
+
+    return {
+        "phone": phone_data["name"],
+        "answer": answer
+    }
+
+
+# ==========================================
+# Run chatbot
+# ==========================================
+
+if __name__ == "__main__":
+
+    print("================================")
+    print(" Samsung Phone RAG + LLM Chatbot")
+    print("================================")
+    print("RAG + FLAN-T5 LLM ready!")
+    print("Type 'exit' to stop.\n")
+
+    while True:
+
+        question = input(
+            "Ask a question about Samsung phones: "
         )
 
-        print(answer)
+        if question.lower().strip() == "exit":
+            print("Goodbye!")
+            break
 
-    else:
-        print("\nSorry, I could not find relevant information.")
+        result = ask_question(question)
 
-    print("--------------------------------\n")
-
+        print("\n--------------------------------")
+        print(f"{result['phone']}:")
+        print(result["answer"])
+        print("--------------------------------\n")

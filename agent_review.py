@@ -1,4 +1,6 @@
 from agent_specs import SpecificationAgent
+from llm import generate_text
+
 
 
 class ReviewAgent:
@@ -11,62 +13,58 @@ class ReviewAgent:
         phone_name = phone_data["name"]
         specs = phone_data["specifications"]
 
-        chipset = specs.get("Chipset", "Not available")
         display = specs.get("Size", "Not available")
-        battery = specs.get("Battery", "Not available")
+        chipset = specs.get("Chipset", "Not available")
         camera = specs.get("Main Camera", "Not available")
+        battery = specs.get("Battery", "Not available")
         charging = specs.get("Charging", "Not available")
 
-        review = f"""
-================================
-Product Review
-================================
+        # Reliable specification summary
+        return f"""
+    ================================
+    Product Review
+    ================================
 
-Phone: {phone_name}
+    Phone: {phone_name}
 
-Display:
-{display}
+    Display:
+    {display}
 
-Performance:
-{chipset}
+    Performance:
+    {chipset}
 
-Camera:
-{camera}
+    Camera:
+    {camera}
 
-Battery:
-{battery}
+    Battery:
+    {battery}
 
-Charging:
-{charging}
+    Charging:
+    {charging}
 
-Overall Review:
-The {phone_name} offers a strong overall smartphone experience.
-It has a capable processor, a high-quality camera system,
-a good display, and useful charging features.
+    Overall Review:
+    The {phone_name} offers a balanced smartphone experience based
+    on its available specifications. It features a capable chipset,
+    a versatile camera system, a quality display, and a substantial
+    battery. These specifications make it suitable for everyday use,
+    photography, multimedia and general performance.
 
-Based on the available specifications, it is a good choice
-for users who want balanced performance, camera quality,
-and everyday usability.
-
-================================
-"""
-
-        return review
-
+    ================================
+    """
 
 # Test Agent 2
 if __name__ == "__main__":
 
-    # Agent 1
     spec_agent = SpecificationAgent()
 
-    # Get phone information
-    phone_data = spec_agent.get_phone_specs("Samsung Galaxy S23")
+    phone_data = spec_agent.get_phone_specs(
+        "Samsung Galaxy S23"
+    )
 
-    # Agent 2
     review_agent = ReviewAgent()
 
-    # Generate review
-    review = review_agent.generate_review(phone_data)
+    review = review_agent.generate_review(
+        phone_data
+    )
 
     print(review)
