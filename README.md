@@ -1,275 +1,366 @@
-# 📱 Samsung Phone Query & Review System
+# Samsung Phone Query and Review System
 
-> An intelligent Samsung smartphone information and review system powered by **Web Scraping, PostgreSQL, RAG, Semantic Search, Multi-Agent Architecture, and FastAPI**.
+An AI-powered Samsung Phone Query and Review System that combines web scraping, PostgreSQL, RAG-based semantic search, an open-source LLM, a multi-agent architecture, and FastAPI.
 
-The **Samsung Phone Query & Review System** is a complete AI-assisted product information platform that collects Samsung smartphone specifications from GSMArena, stores and processes the data, retrieves relevant information using semantic search, and generates structured product reviews through a multi-agent workflow.
-
-The system provides both a **REST API** and a **web-based interface** so users can search for Samsung phones, explore their specifications, and receive AI-assisted product reviews.
+The system collects Samsung smartphone specifications from GSMArena, stores the data in PostgreSQL, retrieves relevant information using semantic search, generates AI-assisted responses and product reviews, and provides API endpoints for interacting with the system.
 
 ---
 
-## ✨ Features
+## Features
 
-* 🔎 Samsung smartphone specification scraping
-* 📱 Supports multiple Samsung Galaxy models
-* 🗄️ PostgreSQL database integration
-* 🧠 Retrieval-Augmented Generation (RAG)
-* 🔤 Semantic search using Sentence Transformers
-* 🤖 Multi-Agent architecture
-* 📋 Dedicated Specification Agent
-* ✍️ Dedicated Review Agent
-* ⚡ FastAPI REST API
-* 🌐 Interactive web frontend
-* 📊 Structured phone specification display
-* ⭐ Product review generation
-* ❌ User-friendly error handling
-* 🔄 Modular and extensible architecture
+* Scrapes Samsung smartphone specifications from GSMArena
+* Collects data for 10 Samsung Galaxy smartphones
+* Stores scraped data in PostgreSQL
+* Uses JSONB for structured specification storage
+* Semantic search using Sentence Transformers
+* RAG-based question answering
+* Open-source LLM using FLAN-T5
+* Multi-Agent architecture
+* Specification Agent for retrieving phone information
+* Review Agent for generating product reviews
+* FastAPI REST API
+* Interactive Swagger API documentation
+* Supports multiple phone-related queries
+* Simple frontend interface
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```text
-                         ┌─────────────────────┐
-                         │      GSMArena       │
-                         └──────────┬──────────┘
-                                    │
-                                    ▼
-                         ┌─────────────────────┐
-                         │   Web Scraper       │
-                         │ Requests + BS4      │
-                         └──────────┬──────────┘
-                                    │
-                                    ▼
-                         ┌─────────────────────┐
-                         │   PostgreSQL DB     │
-                         └──────────┬──────────┘
-                                    │
-                                    ▼
-                         ┌─────────────────────┐
-                         │   RAG Retrieval     │
-                         │ SentenceTransformer │
-                         └──────────┬──────────┘
-                                    │
-                         ┌──────────┴──────────┐
-                         ▼                     ▼
-                ┌─────────────────┐   ┌─────────────────┐
-                │ Specification   │   │   Review Agent  │
-                │     Agent       │──▶│                 │
-                └─────────────────┘   └────────┬────────┘
-                                               │
-                                               ▼
-                                      ┌─────────────────┐
-                                      │  Product Review │
-                                      └────────┬────────┘
-                                               │
-                                               ▼
-                                      ┌─────────────────┐
-                                      │    FastAPI      │
-                                      │   REST API      │
-                                      └────────┬────────┘
-                                               │
-                                               ▼
-                                      ┌─────────────────┐
-                                      │  Web Frontend   │
-                                      └─────────────────┘
+GSMArena
+    │
+    ▼
+Web Scraper
+    │
+    ▼
+samsung_phones.json
+    │
+    ▼
+PostgreSQL Database
+    │
+    ├───────────────┐
+    │               │
+    ▼               ▼
+Specification   RAG Chatbot
+   Agent             │
+    │                ▼
+    │            FLAN-T5 LLM
+    │
+    ▼
+Review Agent
+    │
+    ▼
+Product Review
+
+             ▼
+          FastAPI
+             │
+             ▼
+          Frontend
 ```
 
 ---
 
-## 🔄 How It Works
+## Technologies Used
 
-### 1. Data Collection
+* **Python**
+* **BeautifulSoup**
+* **Requests**
+* **PostgreSQL**
+* **psycopg2**
+* **Sentence Transformers**
+* **FLAN-T5**
+* **Hugging Face Transformers**
+* **PyTorch**
+* **FastAPI**
+* **Uvicorn**
+* **HTML/CSS/JavaScript**
 
-The scraper collects Samsung smartphone specifications from GSMArena using:
+---
 
-* `Requests`
-* `BeautifulSoup4`
+## Samsung Phones Included
 
-The collected data includes:
+The system currently contains 10 Samsung smartphones:
 
-* Network
+1. Samsung Galaxy S21 5G
+2. Samsung Galaxy S22 5G
+3. Samsung Galaxy S23
+4. Samsung Galaxy S24
+5. Samsung Galaxy S25
+6. Samsung Galaxy S21 Ultra 5G
+7. Samsung Galaxy S22 Ultra 5G
+8. Samsung Galaxy S23 Ultra
+9. Samsung Galaxy S24 Ultra
+10. Samsung Galaxy S25 Ultra
+
+---
+
+# Project Structure
+
+```text
+Samsung_Phone_Query_Review_System/
+│
+├── agent_review.py
+├── agent_specs.py
+├── api.py
+├── chatbot.py
+├── database.py
+├── llm.py
+├── multi_agent.py
+├── scraper.py
+├── samsung_phones.json
+├── requirements.txt
+├── README.md
+├── .gitignore
+│
+├── frontend/
+│   └── ...
+│
+└── venv/
+```
+
+---
+
+# How the System Works
+
+## 1. Web Scraping
+
+The `scraper.py` file collects Samsung smartphone specifications from GSMArena using:
+
+* Requests
+* BeautifulSoup
+
+The scraper extracts information such as:
+
 * Display
+* Size
 * Resolution
-* Processor
-* GPU
-* RAM & Storage
 * Camera
-* Selfie Camera
 * Battery
-* Charging
+* Chipset
+* CPU
+* GPU
 * Operating System
-* Connectivity
+* Memory
+* Storage
 * Price
-* Dimensions
-* Weight
-* Other specifications
+* Connectivity
+* Other available specifications
 
-The collected information is processed and stored for later retrieval.
-
----
-
-### 2. PostgreSQL Database
-
-The scraped phone information is stored in **PostgreSQL**.
-
-Database storage provides a structured and scalable way to manage the collected smartphone information.
-
-Example database:
+The collected data is stored in:
 
 ```text
-Database: samsung_phone_db
+samsung_phones.json
+```
+
+Run:
+
+```bash
+python scraper.py
 ```
 
 ---
 
-### 3. RAG-Based Retrieval
+# 2. PostgreSQL Database
 
-The system uses **Retrieval-Augmented Generation (RAG)** principles to find the most relevant information for a user's query.
+The scraped phone data is stored in PostgreSQL.
 
-Phone specifications are converted into text representations and encoded into vector embeddings using:
+Database name:
+
+```text
+samsung_phone_db
+```
+
+Main table:
+
+```text
+phones
+```
+
+The table contains:
+
+* `id`
+* `name`
+* `url`
+* `specifications`
+
+The specifications are stored using PostgreSQL's `JSONB` data type.
+
+Run:
+
+```bash
+python database.py
+```
+
+Before running the database script, make sure PostgreSQL is installed and the database exists.
+
+---
+
+# 3. RAG Chatbot
+
+The chatbot uses a Retrieval-Augmented Generation approach.
+
+The system first converts the phone information into embeddings using:
 
 ```text
 all-MiniLM-L6-v2
 ```
 
-When a user asks a question, the question is also converted into an embedding.
-
-The system calculates semantic similarity and retrieves the most relevant phone information.
-
-Example:
+When a user asks a question:
 
 ```text
-User:
-What is the processor of Samsung Galaxy S24?
-
-        ↓
-
+User Query
+     ↓
 Semantic Search
-
-        ↓
-
-Samsung Galaxy S24
-
-        ↓
-
-Relevant Processor Information
+     ↓
+Relevant Phone
+     ↓
+Relevant Specifications
+     ↓
+LLM / Factual Response
 ```
 
----
+This helps the chatbot retrieve information from the available Samsung phone dataset instead of generating answers only from general model knowledge.
 
-## 🤖 Multi-Agent Architecture
-
-The project uses a simple and modular multi-agent workflow.
-
-### Agent 1 — Specification Agent
-
-The Specification Agent is responsible for retrieving the important specifications of the requested Samsung phone.
-
-It focuses on information such as:
-
-* Display
-* Processor
-* Camera
-* Battery
-* Charging
-
-Example:
+Example queries:
 
 ```text
-Phone: Samsung Galaxy S23
-
-Display:
-6.1 inches
-
-Processor:
-Snapdragon 8 Gen 2
-
-Battery:
-Active use score 11:27h
-
-Camera:
-50 MP + 10 MP Telephoto + 12 MP Ultrawide
+What is the camera of Samsung Galaxy S23?
 ```
-
----
-
-### Agent 2 — Review Agent
-
-The Review Agent receives the relevant specifications from the Specification Agent and generates a structured product review.
-
-The review considers:
-
-* Display quality
-* Performance
-* Camera capability
-* Battery experience
-* Charging features
-
-Example:
 
 ```text
-Overall Review:
+What is the battery capacity of Samsung Galaxy S24?
+```
 
-The Samsung Galaxy S23 offers a strong overall smartphone
-experience with capable performance, a high-quality camera
-system, a compact display, and useful charging features.
+```text
+What chipset does Samsung Galaxy S25 use?
+```
 
-It is a balanced choice for users looking for performance,
-camera quality, and everyday usability.
+```text
+Tell me about the display of Samsung Galaxy S23 Ultra.
+```
+
+Run:
+
+```bash
+python chatbot.py
 ```
 
 ---
 
-## 🔗 Complete Multi-Agent Workflow
+# 4. Open-Source LLM
+
+The project uses Google's open-source:
+
+```text
+google/flan-t5-small
+```
+
+The model is loaded using Hugging Face Transformers.
+
+The LLM is used for generating natural-language responses and AI-assisted product reviews.
+
+The model is loaded in:
+
+```text
+llm.py
+```
+
+---
+
+# 5. Multi-Agent System
+
+The project uses a simple multi-agent architecture with two specialized agents.
+
+## Agent 1 — Specification Agent
+
+File:
+
+```text
+agent_specs.py
+```
+
+Responsibilities:
+
+* Find the requested Samsung phone
+* Retrieve its specifications
+* Provide structured phone information
+
+---
+
+## Agent 2 — Review Agent
+
+File:
+
+```text
+agent_review.py
+```
+
+Responsibilities:
+
+* Receive phone specifications from Agent 1
+* Generate an AI-assisted product review
+* Use the available specifications as the review context
+* Provide a reliable specification-based fallback when necessary
+
+---
+
+## Multi-Agent Workflow
 
 ```text
 User
  │
  ▼
-Phone Search
- │
- ▼
 Specification Agent
  │
- ├── Display
- ├── Processor
- ├── Camera
- ├── Battery
- └── Charging
+ ▼
+Phone Specifications
  │
  ▼
 Review Agent
  │
  ▼
-Generated Product Review
+AI Product Review
 ```
 
-This architecture keeps the responsibilities of each component separate and makes the system easier to maintain and extend.
+Run:
+
+```bash
+python multi_agent.py
+```
+
+Then enter a phone name, for example:
+
+```text
+Samsung Galaxy S23
+```
+
+To stop the program:
+
+```text
+exit
+```
 
 ---
 
-# 🌐 FastAPI
+# 6. FastAPI
 
-The backend is built using **FastAPI**.
+The project provides a REST API using FastAPI.
 
-It exposes the product review functionality through a REST API.
-
-### Start the backend
+Start the server:
 
 ```bash
 uvicorn api:app --reload
 ```
 
-The API will be available at:
+The API will run at:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-### Swagger API Documentation
-
-FastAPI provides interactive API documentation at:
+Interactive Swagger documentation:
 
 ```text
 http://127.0.0.1:8000/docs
@@ -277,15 +368,33 @@ http://127.0.0.1:8000/docs
 
 ---
 
-## 📡 API Endpoint
+# API Endpoints
 
-### Generate Product Review
+## GET `/`
 
-```http
-POST /review
+Checks whether the API is running.
+
+Example response:
+
+```json
+{
+    "message": "Samsung Phone Query and Review API is running"
+}
 ```
 
-### Request
+---
+
+## GET `/phones`
+
+Returns all available Samsung phones and their specifications.
+
+---
+
+## POST `/specifications`
+
+Retrieves detailed specifications for a requested Samsung phone.
+
+Example request:
 
 ```json
 {
@@ -293,107 +402,56 @@ POST /review
 }
 ```
 
-### Response
+---
+
+## POST `/review`
+
+Generates an AI-assisted product review for a Samsung phone.
+
+Example request:
+
+```json
+{
+    "phone_name": "Samsung Galaxy S23"
+}
+```
+
+---
+
+## POST `/chat`
+
+Answers a natural-language question using the RAG chatbot.
+
+Example request:
+
+```json
+{
+    "query": "What is the camera of Samsung Galaxy S23?"
+}
+```
+
+Example response:
 
 ```json
 {
     "success": true,
+    "query": "What is the camera of Samsung Galaxy S23?",
     "phone": "Samsung Galaxy S23",
-    "review": "Product Review..."
+    "answer": "The Samsung Galaxy S23 has a 50 MP..."
 }
 ```
 
-The API connects the multi-agent backend with the frontend application.
-
 ---
 
-# 🖥️ Frontend
-
-The frontend provides a simple user-friendly interface where users can:
-
-* Search for Samsung phones
-* Select a phone model
-* View specifications
-* Ask product-related questions
-* Generate product reviews
-* View review results in a structured format
-
-The frontend communicates with the FastAPI backend through REST API requests.
-
-```text
-Frontend
-    │
-    │ HTTP Request
-    ▼
-FastAPI
-    │
-    ▼
-Multi-Agent System
-    │
-    ▼
-Review
-    │
-    ▼
-Frontend Display
-```
-
----
-
-# 📂 Project Structure
-
-```text
-Samsung_Phone_Query_Review_System/
-│
-├── scraper.py
-│
-├── chatbot.py
-│
-├── agent_specs.py
-│
-├── agent_review.py
-│
-├── multi_agent.py
-│
-├── api.py
-│
-├── samsung_phones.json
-│
-├── frontend/
-│   ├── ...
-│
-├── requirements.txt
-│
-├── .gitignore
-│
-└── README.md
-```
-
----
-
-# 🛠️ Technologies Used
-
-| Technology              | Purpose               |
-| ----------------------- | --------------------- |
-| Python                  | Core development      |
-| Requests                | HTTP requests         |
-| BeautifulSoup4          | Web scraping          |
-| PostgreSQL              | Database              |
-| Sentence Transformers   | Text embeddings       |
-| all-MiniLM-L6-v2        | Semantic similarity   |
-| RAG                     | Information retrieval |
-| FastAPI                 | REST API              |
-| Uvicorn                 | API server            |
-| HTML / CSS / JavaScript | Frontend              |
-
----
-
-# ⚙️ Installation
+# Installation
 
 ## 1. Clone the Repository
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+git clone https://github.com/tzs078/Samsung_Phone_Query_Review_System.git
 ```
+
+Move into the project directory:
 
 ```bash
 cd Samsung_Phone_Query_Review_System
@@ -407,7 +465,7 @@ cd Samsung_Phone_Query_Review_System
 python -m venv venv
 ```
 
-Activate the environment on Windows:
+Activate the virtual environment on Windows:
 
 ```bash
 venv\Scripts\activate
@@ -421,303 +479,170 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-If `requirements.txt` is not available:
-
-```bash
-pip install requests beautifulsoup4
-pip install sentence-transformers
-pip install fastapi uvicorn
-```
-
 ---
 
-# 🗄️ PostgreSQL Setup
+# PostgreSQL Setup
 
 Make sure PostgreSQL is installed and running.
 
-Create the database:
-
-```sql
-CREATE DATABASE samsung_phone_db;
-```
-
-Update the database configuration according to your local PostgreSQL setup.
-
-Example:
+Create a database named:
 
 ```text
-Host: localhost
-Port: 5432
-Database: samsung_phone_db
-Username: postgres
-Password: your_password
+samsung_phone_db
 ```
 
-> Database credentials should not be committed to GitHub. Use environment variables for sensitive configuration.
+Configure the PostgreSQL connection according to your local environment.
+
+Do not commit database passwords or other private credentials to GitHub.
 
 ---
 
-# 🕷️ Run the Scraper
+# Running the Complete Project
 
-To collect Samsung phone information:
+## Step 1 — Scrape Data
 
 ```bash
 python scraper.py
 ```
 
-The scraper retrieves the selected Samsung phone specifications and prepares them for storage and retrieval.
+This generates:
+
+```text
+samsung_phones.json
+```
 
 ---
 
-# 🧠 Run the RAG Chatbot
+## Step 2 — Store Data in PostgreSQL
+
+```bash
+python database.py
+```
+
+---
+
+## Step 3 — Test the RAG Chatbot
 
 ```bash
 python chatbot.py
 ```
 
-Example:
-
-```text
-Ask a question about Samsung phones:
-What is the camera specification of Samsung Galaxy S23?
-```
-
-The system retrieves the relevant information from the collected phone data.
-
 ---
 
-# 🤖 Run the Multi-Agent System
+## Step 4 — Test Multi-Agent System
 
-```bash
+bash
 python multi_agent.py
-```
 
-Example:
-
-```text
-Enter Samsung phone name:
-Samsung Galaxy S23
-```
-
-The system then executes:
-
-```text
-Specification Agent
-        ↓
-Review Agent
-        ↓
-Final Product Review
-```
 
 ---
 
-# 🚀 Run FastAPI
+## Step 5 — Start FastAPI
 
-Start the backend:
-
-```bash
+bash
 uvicorn api:app --reload
-```
-
-Then open:
-
-```text
-http://127.0.0.1:8000/docs
-```
-
-You can test the `/review` endpoint directly from Swagger UI.
-
----
-
-# 💡 Example Queries
-
-The system can handle queries such as:
-
-```text
-What is the camera specification of Samsung Galaxy S23?
-
-What is the battery life of Samsung Galaxy S23?
-
-What is the processor of Samsung Galaxy S24?
-
-What is the screen size of Samsung Galaxy S22?
-
-What is the price of Samsung Galaxy S25?
-
-Which processor does Samsung Galaxy S25 Ultra use?
-```
-
----
-
-# 📊 Example Output
-
-```text
-================================
-Product Review
-================================
-
-Phone: Samsung Galaxy S23
-
-Display:
-6.1 inches
-
-Performance:
-Snapdragon 8 Gen 2
-
-Camera:
-50 MP + 10 MP Telephoto + 12 MP Ultrawide
-
-Battery:
-Active use score 11:27h
-
-Charging:
-25W wired + 15W wireless
-
-Overall Review:
-The Samsung Galaxy S23 offers a strong overall
-smartphone experience with balanced performance,
-camera quality, display and charging features.
-```
-
----
-
-# 🔐 Security
-
-Sensitive information such as:
-
-* Database passwords
-* API keys
-* Access tokens
-* Environment variables
-
-should never be committed to the repository.
-
-A `.gitignore` file should include:
-
-```text
-venv/
-.env
-__pycache__/
-*.pyc
-```
-
----
-
-# 🧪 Testing
-
-The system can be tested at different levels:
-
-### Scraper Test
-
-```bash
-python scraper.py
-```
-
-Verify that phone information is collected successfully.
-
-### RAG Test
-
-```bash
-python chatbot.py
-```
-
-Test different Samsung phone-related questions.
-
-### Agent Test
-
-```bash
-python multi_agent.py
-```
-
-Verify that the Specification Agent and Review Agent work together.
-
-### API Test
 
 Open:
-
-```text
 http://127.0.0.1:8000/docs
-```
-
-Test:
-
-```text
-POST /review
-```
-
-with different Samsung phone names.
 
 ---
 
-# 📈 Future Improvements
+# Example Questions
 
-The system can be extended with:
+The chatbot can handle questions such as:
+What is the camera of Samsung Galaxy S23?
+What is the battery of Samsung Galaxy S24?
+What processor does Samsung Galaxy S25 use?
+Tell me about the display of Samsung Galaxy S23 Ultra
 
-* More Samsung smartphone models
-* Comparison between multiple phones
-* User accounts and saved reviews
-* Advanced recommendation system
-* Review scoring and rating
-* More sophisticated agent collaboration
-* Conversation history
-* Better natural-language generation
-* Automated scheduled data updates
-* Cloud deployment
-* Production database configuration
-* Monitoring and logging
+
+What is the price of Samsung Galaxy S24?
+
+The system retrieves relevant information from the collected Samsung phone dataset and generates a response.
 
 ---
 
-# 🎯 Project Objectives
+# Testing
 
-The project demonstrates the practical integration of several modern software and AI concepts:
+The following components have been tested:
 
-* Web scraping
-* Data processing
-* Database management
-* Semantic search
-* Vector embeddings
-* Retrieval-Augmented Generation
-* Multi-Agent systems
-* REST API development
-* Frontend-backend integration
-
-The main objective is to build a practical system that can transform raw smartphone data into useful, searchable and understandable product information.
-
----
-
-# 📌 Disclaimer
-
-The smartphone specifications used by this project are collected from publicly available online sources. The project is intended for educational, research and demonstration purposes.
+* GSMArena scraping
+* JSON data generation
+* PostgreSQL data insertion
+* Semantic retrieval
+* RAG chatbot
+* FLAN-T5 model loading
+* Specification Agent
+* Review Agent
+* Multi-Agent workflow
+* FastAPI server
+* `/phones` endpoint
+* `/specifications` endpoint
+* `/review` endpoint
+* `/chat` endpoint
+* Swagger API documentation
 
 ---
 
-# 👩‍💻 Author
+# Security
+
+Sensitive configuration such as database passwords should be stored using environment variables or a local `.env` file.
+
+The following files should not be committed to GitHub:
+
+.env
+venv/
+__pycache__/
+*.pyc
+---
+
+# Future Improvements
+
+Possible future improvements include:
+
+* Add more Samsung phone models
+* Add separate database tables for specifications and prices
+* Add real-time pricing
+* Improve RAG retrieval
+* Use a larger open-source LLM
+* Add conversation memory
+* Improve multi-agent orchestration using CrewAI or LangChain
+* Add phone comparison functionality
+* Add automated testing
+* Improve frontend UI
+* Deploy the API to a cloud platform
+
+---
+
+# Project Objectives
+
+The main objectives of this project are:
+
+1. Collect structured Samsung phone data through web scraping.
+2. Store the collected information in PostgreSQL.
+3. Implement semantic retrieval using embeddings.
+4. Build an RAG-based conversational chatbot.
+5. Integrate an open-source LLM.
+6. Implement a multi-agent workflow.
+7. Provide REST API endpoints using FastAPI.
+8. Allow users to query Samsung phone specifications and generate product reviews.
+
+---
+
+# Disclaimer
+
+The phone specifications used in this project are collected from GSMArena for educational and project demonstration purposes.
+
+This project is developed as part of a technical assignment and is not affiliated with Samsung Electronics or GSMArena.
+
+---
+
+# Author
 
 **Tasnim Zaman**
 
-Computer Science & Engineering
+CSE Graduate
+Bangladesh
 
----
-
-## ⭐ Project Highlights
-
-```text
-Web Scraping
-     +
-PostgreSQL
-     +
-Semantic Search
-     +
-RAG
-     +
-Multi-Agent System
-     +
-FastAPI
-     +
-Frontend
-     =
-Samsung Phone Query & Review System
-```
-
-⭐ If you find this project useful, consider giving the repository a star.
+GitHub:
+https://github.com/tzs078/Samsung_Phone_Query_Review_System
